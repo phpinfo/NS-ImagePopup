@@ -4,6 +4,7 @@ NS.ImagePopup = new Class({
 
 	options:
 	{
+		duration: 200
 	},
 
 	_fx: null,
@@ -32,12 +33,15 @@ NS.ImagePopup = new Class({
 
 		this.disable();
 
+		console.log('.. ' + url);
+
 		var cont = this._getContainer(),
 			pos = event.target.getPosition(),
 			dim = event.target.getDimensions();
 
 		var img = new Image();
 		img.onload = function(){
+			console.log('ok ' + url);
 			cont.set('src', url).setStyles({
 				left: pos.x,
 				top: pos.y,
@@ -46,6 +50,10 @@ NS.ImagePopup = new Class({
 			});
 			this._popup(img.width, img.height);
 		}.bind(this);
+		img.onerror = function(){
+			alert('Error loading image from "' + url + '"');
+			this.enable();
+		}
 		img.src = url;
 	},
 
@@ -68,7 +76,7 @@ NS.ImagePopup = new Class({
 				this._hide();
 			}.bind(this));
 
-			this._fx = new Fx.Morph(NS.ImagePopup._cont, {duration:100});
+			this._fx = new Fx.Morph(NS.ImagePopup._cont, {duration:this.options.duration});
 		}
 		
 		return NS.ImagePopup._cont;
